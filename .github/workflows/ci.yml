@@ -29,8 +29,9 @@ jobs:
       - name: Install Tenderly CLI
         run: |
           curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-          tenderly version
+          tenderly login --authentication-method "access-key" --access-key ${{ secrets.TENDERLY_ACCESS_KEY }}
       - name: Tenderly Login
         run: |
+          curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
           tenderly login --authentication-method "access-key" --access-key ${{ secrets.TENDERLY_ACCESS_KEY }}
           tenderly version
