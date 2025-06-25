@@ -1,0 +1,38 @@
+name: CI
+
+jobs:
+  build:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.4.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Install Tenderly CLI
+        run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
+
+      - run: pnpm install
+
+      - name: Tenderly Login
+        run: |
+          tenderly login --authentication-method "access-key" --access-key ${{ secrets.TENDERLY_ACCESS_KEY }}
+          tenderly version
+
+      - run: pnpm build
+
