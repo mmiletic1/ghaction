@@ -8,9 +8,9 @@ CUR_VERSION=""
 
 # Function to fetch GitHub API data with retries
 fetch_github_api_with_retries() {
-  local url="$1" # 'local' is correct here because it's inside a function
-  local attempts=0
-  local response=""
+  url="$1" # Uklonjeno 'local'
+  attempts=0
+  response=""
 
   while [ $attempts -lt $MAX_RETRIES ]; do
     response=$(curl -s "$url")
@@ -77,7 +77,6 @@ if [ "$NEW_VERSION" != "$CUR_VERSION" ]; then
 
   printf "Downloading from: %s\n" "$DOWNLOAD_URL"
   # Download the tarball with retries
-  # REMOVED 'local' from the 'attempts' variable here:
   attempts=0
   while [ $attempts -lt $MAX_RETRIES ]; do
     if curl -sLo "$tarball" "$DOWNLOAD_URL"; then
