@@ -32,7 +32,7 @@ jobs:
       - name: Install Tenderly CLI (if not cached)
         # This condition ensures the installer only runs if a cache hit didn't occur
         if: steps.cache-tenderly-cli.outputs.cache-hit != 'true'
-        run: curl https://raw.githubusercontent.com/mmiletic1/ghaction/main/install-linux.sh | sh
+        run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
 
       - name: Verify Tenderly CLI Version
         run: tenderly version
