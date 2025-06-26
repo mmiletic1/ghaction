@@ -23,11 +23,13 @@ jobs:
       - name: Remove old tenderly if exists
         run: |
           sudo rm -f /usr/local/bin/tenderly
-      - name: Install Tenderly CLI
+      - name: Install Tenderly CLI Manually
         run: |
-          curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-          echo "/usr/local/bin" >> $GITHUB_PATH
-      
+          curl -L https://github.com/Tenderly/tenderly-cli/releases/latest/download/tenderly_Linux_x86_64.tar.gz -o tenderly.tar.gz
+          tar -xzf tenderly.tar.gz
+          chmod +x tenderly
+          sudo mv tenderly /usr/local/bin/
+          echo "/usr/local/bin" >> $GITHUB_PATH      
       - name: Check Tenderly Version
         run: tenderly version
       
