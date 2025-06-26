@@ -1,5 +1,8 @@
 name: new-CI
 
+on:
+  workflow_dispatch:
+
 jobs:
   tenderly-cli:
     runs-on: ubuntu-latest
