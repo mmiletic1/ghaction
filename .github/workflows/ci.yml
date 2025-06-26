@@ -24,8 +24,11 @@ jobs:
           run: |
             curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
             echo "$HOME/.tenderly/bin" >> $GITHUB_PATH
-      
-        - name: Tenderly Version
-          run: tenderly version
+        
+        - name: Debug binary
+          run: |
+            ls -la ~/.tenderly/bin
+            which tenderly
+            tenderly version
 
 
