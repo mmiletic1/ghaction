@@ -20,9 +20,6 @@ jobs:
                 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
     name: Job ${{ matrix.index }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Setup Tenderly CLI Cache
         id: cache-tenderly-cli
         uses: actions/cache@v4
