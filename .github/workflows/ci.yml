@@ -24,15 +24,14 @@ jobs:
         id: cache-tenderly-cli
         uses: actions/cache@v4
         with:
-          path: /usr/local/bin/tenderly # This is where your script installs the 'tenderly' executable
-          key: ${{ runner.os }}-tenderly-cli-v1 # Use a simple key based on OS and a version indicator
+          path: /usr/local/bin/tenderly
+          key: ${{ runner.os }}-tenderly-cli-v1
           restore-keys: |
-            ${{ runner.os }}-tenderly-cli- # Fallback to a broader key
+            ${{ runner.os }}-tenderly-cli-
 
       - name: Install Tenderly CLI (if not cached)
-        # This condition ensures the installer only runs if a cache hit didn't occur
         if: steps.cache-tenderly-cli.outputs.cache-hit != 'true'
         run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
 
-      - name: Verify Tenderly CLI Version
+      - name: Tenderly Version
         run: tenderly version
