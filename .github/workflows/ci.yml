@@ -20,9 +20,12 @@ jobs:
                 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
     name: Job ${{ matrix.index }}
     steps:
-      - name: Install Tenderly CLI
-        run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-        
-      - name: Tenderly Version
-        run: |
-          tenderly version
+        - name: Install Tenderly CLI
+          run: |
+            curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
+            echo "$HOME/.tenderly/bin" >> $GITHUB_PATH
+      
+        - name: Tenderly Version
+          run: tenderly version
+
+
