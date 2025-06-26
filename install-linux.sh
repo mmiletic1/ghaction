@@ -1,35 +1,58 @@
 #!/bin/bash
+set -euo pipefail
 
-CUR_VERSION=""
-NEW_VERSION="$(curl -s https://api.github.com/repos/Tenderly/tenderly-cli/releases/latest | jq -r '.tag_name' | sed 's/^v//')"
-EXISTS="$(command -v tenderly)"
+echo "📦 Checking Tenderly CLI latest version..."
 
-printf "Installing version %s\n" $NEW_VERSION
+TENDERLY_API="https://api.github.com/repos/Tenderly/tenderly-cli/releases/latest"
+TARBALL="tenderly-binary.tar.gz"
+TMP_DIR="/tmp/tenderly-cli"
+INSTALL_PATH="/usr/local/bin/tenderly"
 
-cd /tmp/ > /dev/null
+# Get latest version (strip "v" prefix if needed)
+NEW_VERSION=$(curl -s $TENDERLY_API | grep '"tag_name":' | sed -E 's/.*"v?([^"]+)".*/\1/')
 
-tarball="tenderly-binary.tar.gz"
+if [[ -z "$NEW_VERSION" ]]; then
+  echo "❌ Failed to fetch latest version from GitHub API."
+  exit 1
+fi
 
-curl -s https://api.github.com/repos/Tenderly/tenderly-cli/releases/latest \
-| grep "browser_download_url.*Linux_amd64\.tar\.gz" \
-| cut -d ":" -f 2,3 \
-| tr -d \" \
-| xargs curl -sLo $tarball
+echo "🔍 Latest version: $NEW_VERSION"
 
-tar -xzf $tarball
+# Check current version if already installed
+if command -v tenderly &>/dev/null; then
+  CUR_VERSION=$(tenderly version | head -n1 | sed -E 's/.*v([0-9.]+).*/\1/')
+  echo "📍 Current version: $CUR_VERSION"
 
+  if [[ "$CUR_VERSION" == "$NEW_VERSION" ]]; then
+    echo "✅ Latest version already installed."
+    exit 0
+  fi
+else
+  echo "ℹ️ Tenderly CLI not currently installed."
+fi
+
+echo "⬇️ Downloading Tenderly CLI v$NEW_VERSION..."
+
+# Extract download URL
+DOWNLOAD_URL=$(curl -s $TENDERLY_API \
+  | grep "browser_download_url.*Linux_amd64.*\.tar\.gz" \
+  | cut -d '"' -f 4)
+
+if [[ -z "$DOWNLOAD_URL" ]]; then
+  echo "❌ Failed to extract download URL for Linux_amd64 tar.gz"
+  exit 1
+fi
+
+mkdir -p "$TMP_DIR"
+cd "$TMP_DIR"
+
+curl -sL "$DOWNLOAD_URL" -o "$TARBALL"
+tar -xzf "$TARBALL"
 chmod +x tenderly
-
-unlink $tarball
-
-printf "Moving CLI to /usr/local/bin/\n"
-
-mv tenderly /usr/local/bin/
+sudo mv tenderly "$INSTALL_PATH"
 
 cd - > /dev/null
+rm -rf "$TMP_DIR"
 
-location="$(which tenderly)"
-printf "Tenderly CLI installed to: %s\n" $location
-
-version="$(tenderly version | sed -n 1p | cut -d'v' -f3)"
-printf "New Tenderly version installed: %s\n" $version
+echo "✅ Tenderly CLI installed to: $INSTALL_PATH"
+echo "🚀 Installed version: $(tenderly version | head -n1)"
