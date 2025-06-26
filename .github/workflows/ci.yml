@@ -21,24 +21,9 @@ jobs:
                 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
     name: Job ${{ matrix.index }}
     steps:
-      - name: Remove old tenderly if exists
+      - name: Install Tenderly CLI
+        run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
+        
+      - name: Tenderly Version
         run: |
-          sudo rm -f /usr/local/bin/tenderly
-      - name: Install Tenderly CLI (with verification)
-        run: |
-            echo "Installing Tenderly CLI..."
-            curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-            
-            # Verify installation worked
-            if ! command -v tenderly >/dev/null 2>&1; then
-              echo "Script failed, using direct binary..."
-              curl -L -o /tmp/tenderly.tar.gz https://github.com/Tenderly/tenderly-cli/releases/latest/download/tenderly_Linux_x86_64.tar.gz
-              cd /tmp && tar -xzf tenderly.tar.gz
-              chmod +x tenderly
-              sudo mv tenderly /usr/local/bin/tenderly
-            fi
-            
-            # Final verification
-            tenderly version
-      
-      
+          tenderly version
