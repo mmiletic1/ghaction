@@ -1,37 +1,25 @@
-name: CI
-
-on:
-  workflow_dispatch:
+name: new-CI
 
 jobs:
-  build:
-    timeout-minutes: 20
+  tenderly-cli:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+                20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+                30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
+                40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
+                50, 51, 52, 53, 54, 55, 56, 57, 58, 59,
+                60, 61, 62, 63, 64, 65, 66, 67, 68, 69,
+                70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+                80, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+                90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
+    name: Job ${{ matrix.index }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9.4.0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: stable
-
       - name: Install Tenderly CLI
-        run:
-          curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-          
-      - name: Tenderly Login
+        run: curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
+        
+      - name: Tenderly Version
         run: |
-          curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-          tenderly login --authentication-method "access-key" --access-key ${{ secrets.TENDERLY_ACCESS_KEY }}
           tenderly version
