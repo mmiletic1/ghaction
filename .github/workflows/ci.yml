@@ -25,15 +25,19 @@ jobs:
           sudo rm -f /usr/local/bin/tenderly
       - name: Install Tenderly CLI (with verification)
         run: |
-          curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
-          
-          # Verify and fallback if needed
-          if ! command -v tenderly >/dev/null 2>&1; then
-            echo "Script failed, using direct binary..."
-            curl -L -o /tmp/tenderly https://github.com/Tenderly/tenderly-cli/releases/latest/download/tenderly-linux-amd64
-            chmod +x /tmp/tenderly
-            sudo mv /tmp/tenderly /usr/local/bin/tenderly
-          fi
-          tenderly version
+            echo "Installing Tenderly CLI..."
+            curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
+            
+            # Verify installation worked
+            if ! command -v tenderly >/dev/null 2>&1; then
+              echo "Script failed, using direct binary..."
+              curl -L -o /tmp/tenderly.tar.gz https://github.com/Tenderly/tenderly-cli/releases/latest/download/tenderly_Linux_x86_64.tar.gz
+              cd /tmp && tar -xzf tenderly.tar.gz
+              chmod +x tenderly
+              sudo mv tenderly /usr/local/bin/tenderly
+            fi
+            
+            # Final verification
+            tenderly version
       
       
