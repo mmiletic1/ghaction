@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CUR_VERSION=""
-NEW_VERSION="$(curl -s https://api.github.com/repos/Tenderly/tenderly-cli/releases/latest | grep tag_name | cut -d'v' -f2 | cut -d'"' -f1)"
+NEW_VERSION="$(curl -s https://api.github.com/repos/Tenderly/tenderly-cli/releases/latest | jq -r '.tag_name' | sed 's/^v//')"
 EXISTS="$(command -v tenderly)"
 
 printf "Installing version %s\n" $NEW_VERSION
