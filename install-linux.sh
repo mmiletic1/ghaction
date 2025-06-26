@@ -41,6 +41,4 @@ if [ "$NEW_VERSION" != "$CUR_VERSION" ]; then
   version="$(tenderly version | sed -n 1p | cut -d'v' -f3)"
   printf "New Tenderly version installed: %s\n" $version
 
-else
-  printf "Latest version already installed\n"
 fi
