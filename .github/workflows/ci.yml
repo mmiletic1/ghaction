@@ -1,4 +1,4 @@
-name: new-CI
+name: new-CI-cached
 
 on:
   workflow_dispatch:
@@ -20,8 +20,22 @@ jobs:
                 90, 91, 92, 93, 94, 95, 96, 97, 98, 99]
     name: Job ${{ matrix.index }}
     steps:
-      - name: Install Tenderly CLI
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Tenderly CLI Cache
+        id: cache-tenderly-cli
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin/tenderly # This is where your script installs the 'tenderly' executable
+          key: ${{ runner.os }}-tenderly-cli-v1 # Use a simple key based on OS and a version indicator
+          restore-keys: |
+            ${{ runner.os }}-tenderly-cli- # Fallback to a broader key
+
+      - name: Install Tenderly CLI (if not cached)
+        # This condition ensures the installer only runs if a cache hit didn't occur
+        if: steps.cache-tenderly-cli.outputs.cache-hit != 'true'
         run: curl https://raw.githubusercontent.com/mmiletic1/ghaction/main/install-linux.sh | sh
-      - name: Tenderly Version
-        run: |
-          tenderly version
+
+      - name: Verify Tenderly CLI Version
+        run: tenderly version
